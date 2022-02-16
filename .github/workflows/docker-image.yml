@@ -1,0 +1,48 @@
+name: Docker Image CI
+
+on:
+  workflow_dispatch:
+  push:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        base:
+          - ubuntu:latest
+          - ubuntu:20.04
+          - ubuntu:18.04
+
+          - debian:latest
+          - debian:11
+          - debian:10
+
+    steps:
+      - name: Get tagname
+        run: |
+          tagname="$(echo "${{ matrix.base }}" | sed 's/:/-/g')"
+          echo "tagname: $tagname"
+          echo "tagname=$tagname" >>$GITHUB_ENV
+    
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Login
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.tagname }}
+          build-args: |
+            BASE=${{ matrix.base }}
