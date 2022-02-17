@@ -2,6 +2,7 @@ ARG BASE
 FROM ${BASE}
 
 ARG RUNNER_VERSION="2.287.1"
+ARG HUB_VERSION="2.14.2"
 
 RUN ln -f -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
 	&& apt-get update -y \
@@ -28,6 +29,14 @@ RUN /home/docker/actions-runner/bin/installdependencies.sh
 
 COPY start.sh start.sh
 RUN chmod +x start.sh
+
+RUN cd /home/docker \
+	&& curl -O -L https://github.com/github/hub/releases/download/v${HUB_VERSION}/hub-linux-amd64-${HUB_VERSION}.tgz \
+	&& tar xzf ./hub-linux-amd64-${HUB_VERSION}.tgz \
+	&& cd hub-linux-amd64-${HUB_VERSION} \
+	&& ./install \
+	&& cd /home/docker \
+	&& rm -rf hub-linux-amd64-${HUB_VERSION}.tgz hub-linux-amd64-${HUB_VERSION}
 
 USER docker
 ENTRYPOINT ["./start.sh"]
