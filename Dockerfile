@@ -9,8 +9,9 @@ RUN ln -f -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
 
 RUN DEBIAN_FRONTEND=noninteractive \
 	apt-get install -y --no-install-recommends \
-	sudo git curl jq build-essential \
-	python3 python3-venv python3-dev python3-pip
+		sudo curl jq \
+		build-essential git \
+		python3 python3-venv python3-dev python3-pip
 
 RUN useradd -m docker \
 	&& echo "docker ALL=(ALL:ALL) NOPASSWD: ALL" >>/etc/sudoers
