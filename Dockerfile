@@ -4,12 +4,12 @@ FROM ${BASE}
 ARG RUNNER_VERSION="2.287.1"
 ARG HUB_VERSION="2.14.2"
 
-RUN ln -f -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+RUN echo "APT::Get::Assume-Yes \"true\";" >/etc/apt/apt.conf.d/90assumeyes \
+	&& ln -f -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
 	&& apt-get update -y \
 	&& apt-get upgrade -y
 
-RUN DEBIAN_FRONTEND=noninteractive \
-	apt-get install -y --no-install-recommends \
+RUN apt-get install -y --no-install-recommends \
 		sudo curl jq \
 		build-essential git \
 		python3 python3-venv python3-dev python3-pip
