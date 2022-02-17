@@ -20,7 +20,8 @@ RUN cd /home/docker \
 	&& cd actions-runner \
 	&& curl -O -L https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz \
 	&& tar xzf ./actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz \
-	&& chown -R docker ~docker
+	&& chown -R docker ~docker \
+	&& rm ./actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz
 
 RUN /home/docker/actions-runner/bin/installdependencies.sh
 
